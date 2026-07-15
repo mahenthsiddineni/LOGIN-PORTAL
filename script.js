@@ -216,7 +216,8 @@ sendOtpBtn.addEventListener('click', async () => {
   sendOtpBtn.disabled = true;
   sendOtpBtn.textContent = 'Sending…';
 
-const response = await fetch('https://login-portal-backend.onrender.com/send-otp', {
+  try {
+    const response = await fetch('http://localhost:5000/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
@@ -244,7 +245,7 @@ verifyOtpBtn.addEventListener('click', async () => {
   verifyOtpBtn.textContent = 'Verifying…';
 
   try {
-   const response = await fetch('https://login-portal-backend.onrender.com/verify-otp', {
+    const response = await fetch('http://localhost:5000/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp })

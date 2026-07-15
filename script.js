@@ -217,11 +217,11 @@ sendOtpBtn.addEventListener('click', async () => {
   sendOtpBtn.textContent = 'Sending…';
 
   try {
-    const response = await fetch('http://localhost:5000/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
+  const response = await fetch('https://login-portal-backend.onrender.com/send-otp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+});
     const result = await response.json();
     if (result.success) {
       alert('OTP has been sent to your email.');
@@ -245,11 +245,11 @@ verifyOtpBtn.addEventListener('click', async () => {
   verifyOtpBtn.textContent = 'Verifying…';
 
   try {
-    const response = await fetch('http://localhost:5000/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, otp })
-    });
+   const response = await fetch('https://login-portal-backend.onrender.com/verify-otp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, otp })
+});
     const result = await response.json();
     if (result.success) {
       emailVerified = true;

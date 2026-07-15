@@ -217,7 +217,7 @@ sendOtpBtn.addEventListener('click', async () => {
   sendOtpBtn.textContent = 'Sending…';
 
   try {
-    const response = await fetch('https://YOUR-BACKEND-URL.onrender.com/send-otp', {
+    const response = await fetch('https://login-portal-backend.onrender.com/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
@@ -245,7 +245,7 @@ verifyOtpBtn.addEventListener('click', async () => {
   verifyOtpBtn.textContent = 'Verifying…';
 
   try {
-    const response = await fetch('https://YOUR-BACKEND-URL.onrender.com/verify-otp', {
+    const response = await fetch('https://login-portal-backend.onrender.com/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp })
@@ -458,3 +458,4 @@ document.getElementById('logoutBtn2').addEventListener('click', () => {
   avatarDropdown.classList.add('hidden');
   showScreen(homeScreen);
 });
+

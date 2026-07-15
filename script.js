@@ -217,7 +217,7 @@ sendOtpBtn.addEventListener('click', async () => {
   sendOtpBtn.textContent = 'Sending…';
 
   try {
-    const response = await fetch('http://localhost:5000/send-otp', {
+    const response = await fetch('https://YOUR-BACKEND-URL.onrender.com/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
@@ -229,7 +229,7 @@ sendOtpBtn.addEventListener('click', async () => {
       alert(result.message || 'Unable to send OTP.');
     }
   } catch (err) {
-    alert('Cannot connect to the OTP server. Make sure server.js is running on port 5000.');
+    alert('Unable to connect to the server. Please try again.');
   }
 
   sendOtpBtn.disabled = false;
@@ -245,7 +245,7 @@ verifyOtpBtn.addEventListener('click', async () => {
   verifyOtpBtn.textContent = 'Verifying…';
 
   try {
-    const response = await fetch('http://localhost:5000/verify-otp', {
+    const response = await fetch('https://YOUR-BACKEND-URL.onrender.com/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp })
@@ -260,7 +260,7 @@ verifyOtpBtn.addEventListener('click', async () => {
       alert(result.message || 'Incorrect OTP');
     }
   } catch (err) {
-    alert('Cannot connect to the OTP server. Make sure server.js is running on port 5000.');
+    alert('Unable to connect to the server. Please try again.');
   }
 
   verifyOtpBtn.disabled = false;

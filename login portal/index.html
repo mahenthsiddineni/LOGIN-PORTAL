@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KL University | My-KLU Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ======================= HOME SCREEN ======================= -->
+  <section id="home" class="screen home">
+    <div class="home-crest"><span>K</span></div>
+    <h1 class="wordmark">KL University</h1>
+    <div class="sub">My&nbsp;·&nbsp;KLU&nbsp;Student&nbsp;Portal</div>
+    <button class="enter-btn" id="enterBtn">
+      Enter My-KLU
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 6H15M15 6L10 1M15 6L10 11" stroke="#34090F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="arch-row" id="archHome"></div>
+  </section>
+
+  <!-- ======================= LOGIN SCREEN ======================= -->
+  <section id="login" class="screen login-screen hidden">
+    <div class="login-left">
+      <div class="brand">
+        <div class="mark"><span>K</span></div>
+        <div class="name">KL University
+          <small>DEEMED TO BE UNIVERSITY</small>
+        </div>
+      </div>
+      <div class="headline">
+        <h2>Welcome back to campus, digitally.</h2>
+        <p>Sign in with your University ID to reach attendance, grades, timetables and fee records — all in one place.</p>
+      </div>
+
+      <svg class="illustration" width="220" height="150" viewBox="0 0 220 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#E4C878" stroke-width="1.6" opacity="0.85">
+          <circle cx="70" cy="34" r="16"/>
+          <path d="M70 50 L70 100 M70 60 L48 88 M70 60 L92 88 M70 100 L58 140 M70 100 L82 140"/>
+          <rect x="52" y="70" width="12" height="18" rx="2"/>
+          <circle cx="150" cy="30" r="15"/>
+          <path d="M150 45 L150 96 M150 56 L130 82 M150 56 L170 82 M150 96 L138 140 M150 96 L162 140"/>
+          <path d="M138 60 Q150 68 162 60" />
+        </g>
+      </svg>
+
+      <div class="arch-row" id="archLogin"></div>
+    </div>
+
+    <div class="login-right">
+      <form class="login-card" id="loginForm" novalidate>
+        <div class="card-crest"><span>K</span></div>
+        <h3 class="wordmark">Sign in</h3>
+        <div class="eyebrow">KL University</div>
+
+        <div class="error-msg hidden" id="errorMsg"></div>
+
+        <div class="field">
+          <label for="uid">User ID</label>
+          <input id="uid" type="text" inputmode="numeric" placeholder="2300040001" autocomplete="username">
+        </div>
+
+        <div class="field">
+          <label for="pwd">Password</label>
+          <input id="pwd" type="password" placeholder="•••••" autocomplete="current-password">
+        </div>
+
+        <button class="login-submit" type="submit" id="loginBtn">Login</button>
+        <button type="button" class="back-link" id="backBtn">← Back to home</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ======================= DASHBOARD SCREEN (post-login) ======================= -->
+  <section id="dashboard" class="screen dash-screen hidden">
+    <div class="topbar">
+      <div class="brand"><div class="mark">K</div><div class="name">My-KLU</div></div>
+      <div class="search"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.3 15.3 21 21"/></svg><span>Search sections… <em style="opacity:.6">(Beta)</em></span></div>
+      <div class="spacer"></div>
+      <div class="icon-btn"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M21 12h-2.2M5.2 12H3M18.4 5.6l-1.5 1.5M7.1 16.9l-1.5 1.5M18.4 18.4l-1.5-1.5M7.1 7.1 5.6 5.6"/></svg></div>
+      <div class="avatar-menu">
+        <div class="avatar" id="avatarBtn">
+          <div class="circ" id="avatarInit">K</div>
+          <span class="id" id="avatarFullId">ID</span>
+          <svg class="icon" style="width:10px;height:10px;color:var(--ink-soft)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="avatar-dropdown hidden" id="avatarDropdown">
+          <button type="button" data-tile="Profile"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.3" r="3.6"/><path d="M4.7 19.5c.6-3.6 3.8-5.7 7.3-5.7s6.7 2.1 7.3 5.7"/></svg> Profile</button>
+          <button type="button" id="logoutBtn2" class="danger"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5.5A1.5 1.5 0 004 5.5v13A1.5 1.5 0 005.5 20H9"/><path d="M14 8l4 4-4 4"/><path d="M18 12H10"/></svg> Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard">
+      <div class="dash-head">
+        <div>
+          <span class="eyebrow">Student Workspace</span>
+          <h1 id="dashHeading">Welcome back to My-KLU</h1>
+          <p>Everything from registration to results, organized the way your campus actually works.</p>
+        </div>
+        <svg class="dash-illustration" width="180" height="120" viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#C89B3C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <path d="M20 100H160"/>
+            <path d="M28 100V60L90 24L152 60V100"/>
+            <path d="M46 100V68M64 100V68M116 100V68M134 100V68"/>
+            <rect x="80" y="80" width="20" height="20"/>
+            <path d="M90 8V24"/>
+            <path d="M78 8H102L90 16Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="section-label"><h2>Quick Access</h2><div class="rule"></div></div>
+      <div class="quick-grid" id="quickGrid"></div>
+
+      <div class="section-label"><h2>Academics &amp; Services</h2><div class="rule"></div></div>
+      <div class="mega-grid" id="megaGrid"></div>
+    </div>
+  </section>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,8 +1,3 @@
-/* =======================================================
-   KL University — My-KLU Portal
-   Vanilla JS: home/login/register/dashboard routing, OTP register flow, roster login
-   ======================================================= */
-
 /* ---------- hand-drawn icon set (no external icon library) ---------- */
 const ICONS = {
   'house': '<path d="M3 11 12 4 21 11"/><path d="M5 10v9h5v-6h4v6h5v-9"/>',
@@ -75,19 +70,17 @@ function iconSvg(key, extraClass){
   return `<svg class="icon${extraClass ? ' ' + extraClass : ''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
 }
 
-/* =======================================================
-   SCREEN ELEMENTS  (declared ONCE — this was the bug)
-   ======================================================= */
-const homeScreen = document.getElementById('home');
-const loginScreen = document.getElementById('login');
-const registerScreen = document.getElementById('register');
-const dashScreen = document.getElementById('dashboard');
-
-function showScreen(screen) {
-  [homeScreen, loginScreen, registerScreen, dashScreen].forEach(s => s.classList.add('hidden'));
-  screen.classList.remove('hidden');
-  window.scrollTo(0, 0);
+/* ---------- demo roster (same as before) ---------- */
+function buildRoster() {
+  const roster = {};
+  for (let i = 1; i <= 30; i++) {
+    const id = String(2300040000 + i);   // 2300040001 ... 2300040030
+    const password = id.slice(-5);       // 40001 ... 40030
+    roster[id] = password;
+  }
+  return roster;
 }
+const ROSTER = buildRoster();
 
 /* ---------- arches ---------- */
 const ARCH_HEIGHTS = [18, 30, 44, 60, 78, 98, 120, 145];
@@ -101,63 +94,26 @@ function renderArches(containerId) {
 renderArches('archHome');
 renderArches('archLogin');
 
-/* ---------- Home -> Login ---------- */
+/* ---------- screen routing ---------- */
+const homeScreen = document.getElementById('home');
+const loginScreen = document.getElementById('login');
+const dashScreen = document.getElementById('dashboard');
+
+function showScreen(screen) {
+  [homeScreen, loginScreen, dashScreen].forEach(s => s.classList.add('hidden'));
+  screen.classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
 document.getElementById('enterBtn').addEventListener('click', () => showScreen(loginScreen));
 
-/* ---------- Login -> Home ---------- */
 document.getElementById('backBtn').addEventListener('click', () => {
   clearError();
   document.getElementById('loginForm').reset();
   showScreen(homeScreen);
 });
 
-/* ---------- Login <-> Register ---------- */
-document.getElementById('registerBtn').addEventListener('click', () => showScreen(registerScreen));
-document.getElementById('backToLogin').addEventListener('click', () => {
-  document.getElementById('registerForm').reset();
-  showScreen(loginScreen);
-});
-
-/* =======================================================
-   DEMO ROSTER LOGIN  (2300040001 ... 2300040030)
-   password = last 5 digits of the ID
-   ======================================================= */
-function buildRoster() {
-  const roster = {};
-  for (let i = 1; i <= 30; i++) {
-    const id = String(2300040000 + i);
-    roster[id] = id.slice(-5);
-  }
-  return roster;
-}
-const ROSTER = buildRoster();
-
-/* ---------- registered users (mobile number = username) ----------
-   Stored in localStorage so accounts survive a page refresh. */
-function getRegisteredUsers() {
-  try {
-    return JSON.parse(localStorage.getItem('kluRegisteredUsers') || '{}');
-  } catch {
-    return {};
-  }
-}
-function saveRegisteredUser(mobile, password) {
-  const users = getRegisteredUsers();
-  users[mobile] = password;
-  localStorage.setItem('kluRegisteredUsers', JSON.stringify(users));
-}
-
-/* checks both the demo roster AND anyone who registered with their mobile number */
-function checkCredentials(username, password) {
-  if (ROSTER[username] && ROSTER[username] === password) return true;
-  const users = getRegisteredUsers();
-  if (users[username] && users[username] === password) return true;
-  return false;
-}
-function usernameExists(username) {
-  return Boolean(ROSTER[username]) || Boolean(getRegisteredUsers()[username]);
-}
-
+/* ---------- login form ---------- */
 const loginForm = document.getElementById('loginForm');
 const loginBtn = document.getElementById('loginBtn');
 const errorMsg = document.getElementById('errorMsg');
@@ -179,7 +135,7 @@ loginForm.addEventListener('submit', (e) => {
   const password = document.getElementById('pwd').value.trim();
 
   if (!userId || !password) {
-    showError('Enter both your User ID / Mobile Number and password to continue.');
+    showError('Enter both your User ID and password to continue.');
     return;
   }
 
@@ -187,115 +143,20 @@ loginForm.addEventListener('submit', (e) => {
   loginBtn.textContent = 'Signing in…';
 
   setTimeout(() => {
-    if (checkCredentials(userId, password)) {
+    if (ROSTER[userId] && ROSTER[userId] === password) {
       loginForm.reset();
       enterDashboard(userId);
-    } else if (!usernameExists(userId)) {
-      showError('We don\u2019t recognize that User ID / Mobile Number.');
+    } else if (!ROSTER[userId]) {
+      showError('We don\u2019t recognize that User ID.');
     } else {
-      showError('That password doesn\u2019t match this account.');
+      showError('That password doesn\u2019t match this User ID.');
     }
     loginBtn.disabled = false;
     loginBtn.textContent = 'Login';
   }, 350);
 });
 
-/* =======================================================
-   REGISTER + OTP FLOW
-   Requires the companion server.js running on localhost:5000
-   ======================================================= */
-const sendOtpBtn = document.getElementById('sendOtpBtn');
-const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-const registerForm = document.getElementById('registerForm');
-let emailVerified = false;
-
-sendOtpBtn.addEventListener('click', async () => {
-  const email = document.getElementById('regEmail').value.trim();
-  if (!email) { alert('Please enter your email.'); return; }
-
-  sendOtpBtn.disabled = true;
-  sendOtpBtn.textContent = 'Sending…';
-
-  try {
-    const response = await fetch('https://login-portal-backend.onrender.com/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    const result = await response.json();
-    if (result.success) {
-      alert('OTP has been sent to your email.');
-    } else {
-      alert(result.message || 'Unable to send OTP.');
-    }
-  } catch (err) {
-    alert('Unable to connect to the server. Please try again.');
-  }
-
-  sendOtpBtn.disabled = false;
-  sendOtpBtn.textContent = 'Send OTP';
-});
-
-verifyOtpBtn.addEventListener('click', async () => {
-  const email = document.getElementById('regEmail').value.trim();
-  const otp = document.getElementById('otp').value.trim();
-  if (!otp) { alert('Enter the OTP.'); return; }
-
-  verifyOtpBtn.disabled = true;
-  verifyOtpBtn.textContent = 'Verifying…';
-
-  try {
-    const response = await fetch('https://login-portal-backend.onrender.com/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, otp })
-    });
-    const result = await response.json();
-    if (result.success) {
-      emailVerified = true;
-      alert('✅ Email Verified');
-      document.getElementById('regPassword').disabled = false;
-      document.getElementById('regConfirmPassword').disabled = false;
-    } else {
-      alert(result.message || 'Incorrect OTP');
-    }
-  } catch (err) {
-    alert('Unable to connect to the server. Please try again.');
-  }
-
-  verifyOtpBtn.disabled = false;
-  verifyOtpBtn.textContent = 'Verify OTP';
-});
-
-registerForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const mobile = document.getElementById('regMobile').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const confirm = document.getElementById('regConfirmPassword').value;
-
-  if (!name || !email || !mobile) { alert('Please fill in your name, email and mobile number.'); return; }
-  if (!/^\d{10}$/.test(mobile)) { alert('Enter a valid 10-digit mobile number — this will be your username.'); return; }
-  if (!emailVerified) { alert('Please verify your email with the OTP first.'); return; }
-  if (!password || password.length < 6) { alert('Password must be at least 6 characters.'); return; }
-  if (password !== confirm) { alert('Passwords do not match.'); return; }
-  if (usernameExists(mobile)) { alert('An account with this mobile number already exists. Please sign in instead.'); return; }
-
-  saveRegisteredUser(mobile, password);
-
-  alert(`Account created for ${name}!\n\nYour username is your mobile number:\n${mobile}\n\nUse it with the password you just set to sign in.`);
-  registerForm.reset();
-  emailVerified = false;
-  document.getElementById('regPassword').disabled = true;
-  document.getElementById('regConfirmPassword').disabled = true;
-  showScreen(loginScreen);
-});
-
-
-/* =======================================================
-   DASHBOARD DATA
-   ======================================================= */
+/* ---------- dashboard data ---------- */
 const QUICK = [
   {t:'Home', i:'fa-house'},
   {t:'Attendance Register', i:'fa-calendar-check'},
@@ -458,4 +319,3 @@ document.getElementById('logoutBtn2').addEventListener('click', () => {
   avatarDropdown.classList.add('hidden');
   showScreen(homeScreen);
 });
-
